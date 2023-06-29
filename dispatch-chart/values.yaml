@@ -1,0 +1,7 @@
+dispatch:
+  appName: pgadmin33
+
+postgres:
+  appName: postgres
+
+namespace: dispatch

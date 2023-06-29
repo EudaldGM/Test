@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ .Values.postgres.appName }}
+  name: {{ .Values.postgres.appName }}
+  namespace: {{ .Values.namespace}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: {{ .Values.postgres.appName }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: {{ .Values.postgres.appName }}
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: dispatch
+            - name: POSTGRES_PASSWORD
+              value: dispatch
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.appName }}
+          image: postgres:14.6
+          name: {{ .Values.postgres.appName }}
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+      hostname: {{ .Values.postgres.appName }}
+      restartPolicy: Always
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
+status: {}

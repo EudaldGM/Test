@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: {{ .Values.dispatch.appName }}
+  name: {{ .Values.dispatch.appName }}
+  namespace: {{ .Values.namespace}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: {{ .Values.dispatch.appName }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: {{ .Values.dispatch.appName }}
+    spec:
+      containers:
+        - env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: dispatch@netflix.com
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: admin
+          image: dpage/{{ .Values.dispatch.appName }}4
+          name: {{ .Values.dispatch.appName }}
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
